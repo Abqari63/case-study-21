@@ -49,7 +49,7 @@ This is a console-based Car Rental System implemented in Java using JDBC for dat
 
 3. **Configure the database connection:**
 
-   Update the `DatabaseConnection.java` file with your MySQL credentials.
+   Update the `src/com/cts/carrentalsystem/util/MySQLConnection.java` file with your MySQL credentials.
 
     ```java
     private static final String URL = "jdbc:mysql://localhost:3306/car_rental_system";
