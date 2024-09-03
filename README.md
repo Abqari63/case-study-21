@@ -17,7 +17,7 @@ This is a console-based Car Rental System implemented in Java using JDBC for dat
 
     ```sh
     git clone https://github.com/Abqari63/case-study-21
-    cd car-rental-system
+    cd case-study-21 (folder name)
     ```
 
 2. **Create the database and tables:**
