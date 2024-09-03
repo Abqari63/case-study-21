@@ -16,7 +16,7 @@ This is a console-based Car Rental System implemented in Java using JDBC for dat
 1. **Clone the repository:**
 
     ```sh
-    git clone <repository-url>
+    git clone https://github.com/Abqari63/case-study-21
     cd car-rental-system
     ```
 
@@ -68,7 +68,3 @@ This is a console-based Car Rental System implemented in Java using JDBC for dat
 
 1. Run the application.
 2. Follow the menu prompts to manage cars and rentals.
-
-## License
-
-This project is licensed under the MIT License.
