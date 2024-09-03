@@ -1,15 +1,14 @@
 /**
- * CarService provides methods to perform CRUD operations on the Car database.
+ * CarDAOImpl provides methods to perform CRUD operations on the Car database.
  * This class interacts with the MySQL database to add, retrieve, update, and delete car records.
  * It uses JDBC for database connectivity.
  *
  * @version 1.0.0
- * @author Abqari Abbas
  * @since 2024-09-03
  */
+package com.cts.carrentalsystem.dao.impl;
 
-package com.cts.carrentalsystem.service;
-
+import com.cts.carrentalsystem.dao.CarDAO;
 import com.cts.carrentalsystem.util.MySQLConnection;
 import com.cts.carrentalsystem.model.Car;
 
@@ -17,18 +16,17 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CarService {
+public class CarDAOImpl implements CarDAO {
 
-    /**
-     * Adds a new car to the database.
-     *
-     * @param car the Car object containing details of the car to be added.
-     */
+    @Override
     public void addCar(Car car) {
         String query = "INSERT INTO Car (make, model, year, price_per_day, available_for_rent) VALUES (?, ?, ?, ?, ?)";
+        Connection connection = null;
+        PreparedStatement statement = null;
 
-        try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+        try {
+            connection = MySQLConnection.getConnection();
+            statement = connection.prepareStatement(query);
 
             statement.setString(1, car.getMake());
             statement.setString(2, car.getModel());
@@ -39,24 +37,24 @@ public class CarService {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(connection, statement, null);
         }
     }
 
-    /**
-     * Retrieves a car from the database using the car ID.
-     *
-     * @param carId the ID of the car to be retrieved.
-     * @return the Car object if found, otherwise null.
-     */
+    @Override
     public Car getCar(int carId) {
         String query = "SELECT * FROM Car WHERE car_id = ?";
         Car car = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
 
-        try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-
+        try {
+            connection = MySQLConnection.getConnection();
+            statement = connection.prepareStatement(query);
             statement.setInt(1, carId);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
                 car = new Car();
@@ -69,23 +67,25 @@ public class CarService {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(connection, statement, resultSet);
         }
 
         return car;
     }
 
-    /**
-     * Retrieves a list of all cars from the database.
-     *
-     * @return a List of Car objects representing all cars in the database.
-     */
+    @Override
     public List<Car> getAllCars() {
         String query = "SELECT * FROM Car";
         List<Car> cars = new ArrayList<>();
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
 
-        try (Connection connection = MySQLConnection.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
+        try {
+            connection = MySQLConnection.getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
                 Car car = new Car();
@@ -100,21 +100,22 @@ public class CarService {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(connection, statement, resultSet);
         }
 
         return cars;
     }
 
-    /**
-     * Updates the details of an existing car in the database.
-     *
-     * @param car the Car object containing the updated details.
-     */
+    @Override
     public void updateCar(Car car) {
         String query = "UPDATE Car SET make = ?, model = ?, year = ?, price_per_day = ?, available_for_rent = ? WHERE car_id = ?";
+        Connection connection = null;
+        PreparedStatement statement = null;
 
-        try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+        try {
+            connection = MySQLConnection.getConnection();
+            statement = connection.prepareStatement(query);
 
             statement.setString(1, car.getMake());
             statement.setString(2, car.getModel());
@@ -126,29 +127,59 @@ public class CarService {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(connection, statement, null);
         }
     }
 
-    /**
-     * Deletes a car from the database using the car ID.
-     *
-     * @param carId the ID of the car to be deleted.
-     */
+    @Override
     public void deleteCar(int carId) {
-        String deleteQueryFromRental = "DELETE FROM rental where car_id = ?";
+        String deleteQueryFromRental = "DELETE FROM rental WHERE car_id = ?";
         String deleteQueryFromCar = "DELETE FROM Car WHERE car_id = ?";
+        Connection connection = null;
+        PreparedStatement deleteStmt = null;
+        PreparedStatement stmt = null;
 
-        try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement deleteStmt = connection.prepareStatement(deleteQueryFromRental)) {
-
+        try {
+            connection = MySQLConnection.getConnection();
+            deleteStmt = connection.prepareStatement(deleteQueryFromRental);
             deleteStmt.setInt(1, carId);
             deleteStmt.executeUpdate();
 
-            PreparedStatement stmt = connection.prepareStatement(deleteQueryFromCar);
+            stmt = connection.prepareStatement(deleteQueryFromCar);
             stmt.setInt(1, carId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(connection, deleteStmt, null);
+            closeResources(null, stmt, null);
+        }
+    }
+
+    private void closeResources(Connection connection, Statement statement, ResultSet resultSet) {
+        if (resultSet != null) {
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
