@@ -8,6 +8,7 @@
 package com.cts.carrentalsystem.dao.impl;
 
 import com.cts.carrentalsystem.dao.RentalDAO;
+import com.cts.carrentalsystem.exception.CarNotFoundException;
 import com.cts.carrentalsystem.util.MySQLConnection;
 import com.cts.carrentalsystem.model.Rental;
 
@@ -33,8 +34,8 @@ public class RentalDAOImpl implements RentalDAO {
             statement.setString(3, rental.getCustomerPhone());
             statement.setDate(4, new java.sql.Date(rental.getRentalDate().getTime()));
             statement.setNull(5, Types.DATE);
-
             statement.executeUpdate();
+
             updateCarAvailability(rental.getCarId(), false);
         } catch (SQLException e) {
             System.err.println("Error: " + e.getMessage());
@@ -45,31 +46,40 @@ public class RentalDAOImpl implements RentalDAO {
 
     @Override
     public void returnCar(int rentalId) {
-        String updateRentalQuery = "UPDATE Rental SET return_date = ? WHERE rental_id = ?";
         String getCarIdQuery = "SELECT car_id FROM Rental WHERE rental_id = ?";
+        String updateRentalQuery = "UPDATE Rental SET return_date = ? WHERE rental_id = ?";
+
         Connection connection = null;
-        PreparedStatement updateRentalStatement = null;
         PreparedStatement getCarIdStatement = null;
+        PreparedStatement updateRentalStatement = null;
         ResultSet resultSet = null;
 
         try {
             connection = MySQLConnection.getConnection();
+
+            int carId;
+            getCarIdStatement = connection.prepareStatement(getCarIdQuery);
+            getCarIdStatement.setInt(1, rentalId);
+            resultSet = getCarIdStatement.executeQuery();
+
+            try {
+                if (resultSet.next()) {
+                    carId = resultSet.getInt("car_id");
+                } else {
+                    throw new CarNotFoundException("Rental Record not found...!");
+                }
+            }
+            catch (CarNotFoundException err) {
+                System.err.println("ERROR: " + err.getMessage());
+                return;
+            }
 
             updateRentalStatement = connection.prepareStatement(updateRentalQuery);
             updateRentalStatement.setDate(1, new java.sql.Date(new Date().getTime()));
             updateRentalStatement.setInt(2, rentalId);
             updateRentalStatement.executeUpdate();
 
-            int carId = 0;
-            getCarIdStatement = connection.prepareStatement(getCarIdQuery);
-            getCarIdStatement.setInt(1, rentalId);
-            resultSet = getCarIdStatement.executeQuery();
-            if (resultSet.next()) {
-                carId = resultSet.getInt("car_id");
-            } else {
-                System.out.println("Rental record not found.");
-                return;
-            }
+
 
             updateCarAvailability(carId, true);
             System.out.println("Car returned successfully.");
@@ -139,7 +149,7 @@ public class RentalDAOImpl implements RentalDAO {
             try {
                 resultSet.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.err.println("ERROR: " + e.getMessage());
             }
         }
 
@@ -147,7 +157,7 @@ public class RentalDAOImpl implements RentalDAO {
             try {
                 statement.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.err.println("ERROR: " + e.getMessage());
             }
         }
 
@@ -155,7 +165,7 @@ public class RentalDAOImpl implements RentalDAO {
             try {
                 connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.err.println("ERROR: " + e.getMessage());
             }
         }
     }

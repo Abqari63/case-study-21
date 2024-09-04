@@ -99,7 +99,7 @@ public class CarDAOImpl implements CarDAO {
                 cars.add(car);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("ERROR: " + e.getMessage());
         } finally {
             closeResources(connection, statement, resultSet);
         }
