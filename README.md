@@ -16,8 +16,8 @@ This is a console-based Car Rental System implemented in Java using JDBC for dat
 1. **Clone the repository:**
 
     ```sh
-    git clone <repository-url>
-    cd car-rental-system
+    git clone https://github.com/Abqari63/case-study-21
+    cd case-study-21 (folder name)
     ```
 
 2. **Create the database and tables:**
@@ -49,7 +49,7 @@ This is a console-based Car Rental System implemented in Java using JDBC for dat
 
 3. **Configure the database connection:**
 
-   Update the `DatabaseConnection.java` file with your MySQL credentials.
+   Update the `src/com/cts/carrentalsystem/util/MySQLConnection.java` file with your MySQL credentials.
 
     ```java
     private static final String URL = "jdbc:mysql://localhost:3306/car_rental_system";
@@ -60,15 +60,11 @@ This is a console-based Car Rental System implemented in Java using JDBC for dat
 4. **Compile and run the application on windows powershell:**
 
     ```sh
-    javac -d bin src/code/*.java
-    java -cp "bin;lib/mysql-connector-j-9.0.0.jar" code.CarRentalSystem
+    javac -d bin .\src\com\cts\carrentalsystem\client\*.java .\src\com\cts\carrentalsystem\dao\*.java .\src\com\cts\carrentalsystem\exception\*.java .\src\com\cts\carrentalsystem\model\*.java .\src\com\cts\carrentalsystem\services\*.java .\src\com\cts\carrentalsystem\util\*.java .\src\com\cts\carrentalsystem\dao\impl\*.java .\src\com\cts\carrentalsystem\services\impl\*.java
+    java -cp "bin;lib/mysql-connector-j-9.0.0.jar" com.cts.carrentalsystem.CarRentalSystem
     ```
 
 ## Usage
 
 1. Run the application.
 2. Follow the menu prompts to manage cars and rentals.
-
-## License
-
-This project is licensed under the MIT License.
