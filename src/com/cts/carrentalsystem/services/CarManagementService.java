@@ -41,7 +41,7 @@ public interface CarManagementService {
     /**
      * Deletes a car by ID.
      *
-     * @param scanner takin input car ID for to delete the requested car.
+     * @param scanner taking input car ID for to delete the requested car.
      */
     void deleteCar(Scanner scanner);
 }

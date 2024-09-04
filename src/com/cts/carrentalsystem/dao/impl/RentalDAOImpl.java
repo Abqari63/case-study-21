@@ -7,8 +7,8 @@
  */
 package com.cts.carrentalsystem.dao.impl;
 
-import com.cts.carrentalsystem.dao.RentalDAO;
 import com.cts.carrentalsystem.exception.CarNotFoundException;
+import com.cts.carrentalsystem.dao.RentalDAO;
 import com.cts.carrentalsystem.util.MySQLConnection;
 import com.cts.carrentalsystem.model.Rental;
 

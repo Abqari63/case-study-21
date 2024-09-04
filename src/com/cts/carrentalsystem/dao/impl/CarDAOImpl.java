@@ -36,7 +36,7 @@ public class CarDAOImpl implements CarDAO {
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("ERROR: " + e.getMessage());
         } finally {
             closeResources(connection, statement, null);
         }
@@ -66,7 +66,7 @@ public class CarDAOImpl implements CarDAO {
                 car.setAvailableForRent(resultSet.getBoolean("available_for_rent"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("ERROR: " + e.getMessage());
         } finally {
             closeResources(connection, statement, resultSet);
         }
@@ -126,7 +126,7 @@ public class CarDAOImpl implements CarDAO {
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
         } finally {
             closeResources(connection, statement, null);
         }
@@ -150,7 +150,7 @@ public class CarDAOImpl implements CarDAO {
             stmt.setInt(1, carId);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("ERROR: " + e.getMessage());
         } finally {
             closeResources(connection, deleteStmt, null);
             closeResources(null, stmt, null);
@@ -162,7 +162,7 @@ public class CarDAOImpl implements CarDAO {
             try {
                 resultSet.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.err.println("ERROR: " + e.getMessage());
             }
         }
 
@@ -170,7 +170,7 @@ public class CarDAOImpl implements CarDAO {
             try {
                 statement.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.err.println("ERROR: " + e.getMessage());
             }
         }
 
@@ -178,7 +178,7 @@ public class CarDAOImpl implements CarDAO {
             try {
                 connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.err.println("ERROR: " + e.getMessage());
             }
         }
     }
